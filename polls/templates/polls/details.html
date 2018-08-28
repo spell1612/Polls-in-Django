@@ -1,0 +1,16 @@
+<h1>{{ question.ques_text }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+<form action="{% url 'polls:vote' question.id %}" method="post">
+  {% csrf_token %}
+  {% for choice in question.choice_set.all %}
+  <!-- That's the Django metaclass magic in action! Since you have a foreign key from Choice model to the Question model, you will automagically get the inverse relation on instances of the question model back to the set of possible choices.
+  question.choice_set.all is the queryset of choices which point to your question instance as the foreign key.
+  The default name for this inverse relationship is choice_set (because the related model is named Choice). But you can override this default name by specifying the related_name kwarg on the foreign key: -->
+    <input type="radio" name="choice" id="choice{{forloop.counter}}" value="{{choice.id}}" >
+    <label for="coice{{forloop.counter}}">{{choice.choice_text}}</label> <br>
+  {% endfor %}
+  <input type="submit" value="Vote">
+</form>

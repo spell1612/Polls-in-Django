@@ -1,0 +1,13 @@
+{{debug}}
+{% if latestqlist %}
+    <ul>
+    {% for question in latestqlist %}
+    <!-- we use for instead of foreach as it works here -->
+        <!-- <li><a href="/polls/{{ question.id }}/">{{ question.ques_text }}</a></li> --> <!--this way makes it too dependant on the main urls.py -->
+        <li><a href="{% url 'polls:details' question.id %}">{{ question.ques_text }}</a></li>
+        <!-- Now if you wanted to change url, you just have to edit the urls.py and not every single link ever in the templates. Also, namespacing has also been added to show which app url belongs to -->
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
