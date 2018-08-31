@@ -44,6 +44,8 @@ class ResultsView(generic.DetailView):
     model=Question
     template_name='polls/results.html'
 
+# In generic.DetailView the context variable name is chosen by default as the model name with no first letter capitalization
+
 def vote(request, question_id):
     q=get_object_or_404(Question,pk=question_id)
     try:
