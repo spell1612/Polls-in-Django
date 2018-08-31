@@ -1,32 +1,48 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.views import generic
 
 from .models import Choice,Question
 
 # Create your views here.
-def firstfun(request):
-    qdatelist=Question.objects.order_by('-pub_date')[:5] #wow a list from 0-4 (an array of objects) made from the return o a function call!
-    # response=',\n'.join([pro.ques_text for pro in qdatelist] )  #notice this is a list inside the join function! the \n doesnt do anything, need to find replacement
-    #in the pro.ques_text the obj "pro" can be anything for some reason. O_O python is weird
-    context={
-        'latestqlist':qdatelist,  #this is a dictionary
-        # 'debug':"nobugs"
-    }
-    return render(request,'polls/index.html',context) #render() for templates HttpResponse() for single line responses
+# def firstfun(request):
+#     qdatelist=Question.objects.order_by('-pub_date')[:5] #wow a list from 0-4 (an array of objects) made from the return o a function call!
+#     # response=',\n'.join([pro.ques_text for pro in qdatelist] )  #notice this is a list inside the join function! the \n doesnt do anything, need to find replacement
+#     #in the pro.ques_text the obj "pro" can be anything for some reason. O_O python is weird
+#     context={
+#         'latestqlist':qdatelist,  #this is a dictionary
+#         # 'debug':"nobugs"
+#     }
+#     return render(request,'polls/index.html',context) #render() for templates HttpResponse() for single line responses
 
-def details(request,question_id):
-    # try:
-    #     q=Question.objects.get(pk=question_id)
-    # except Question.DoesNotExist:
-    #     raise Http404("The requested page does not exist")
-    q=get_object_or_404(Question,pk=question_id) #this works instead of commented code
-    return render(request, 'polls/details.html',{'question':q}) #inline context
-    # There’s also a get_list_or_404() function, which works just as get_object_or_404() – except using filter() instead of get(). It raises Http404 if the list is empty.
+class firstfun(generic.ListView):
+    template_name='polls/index.html'
+    context_object_name ='latestqlist'
+    def get_queryset(self):
+        return Question.objects.order_by('-pub_date')[:5]
 
-def results(request, question_id):
-    q=get_object_or_404(Question,pk=question_id)
-    return render(request, 'polls/results.html',{'question':q})
+# def details(request,question_id):
+#     # try:
+#     #     q=Question.objects.get(pk=question_id)
+#     # except Question.DoesNotExist:
+#     #     raise Http404("The requested page does not exist")
+#     q=get_object_or_404(Question,pk=question_id) #this works instead of commented code
+#     return render(request, 'polls/details.html',{'question':q}) #inline context
+#     # There’s also a get_list_or_404() function, which works just as get_object_or_404() – except using filter() instead of get(). It raises Http404 if the list is empty.
+
+class DetailView(generic.DetailView):
+    model=Question
+    template_name='polls/details.html'
+
+
+# def results(request, question_id):
+#     q=get_object_or_404(Question,pk=question_id)
+#     return render(request, 'polls/results.html',{'question':q})
+
+class ResultsView(generic.DetailView):
+    model=Question
+    template_name='polls/results.html'
 
 def vote(request, question_id):
     q=get_object_or_404(Question,pk=question_id)
